@@ -5,7 +5,7 @@ import pickle
 
 
 def run(episodes, is_training=True, render=False):
-    env = gym.make('FrozenLake-v1', map_name="8x8", is_slippery=False, render_mode='human' if render else None)
+    env = gym.make('Taxi-v3', render_mode='human' if render else None)
 
     if is_training:
         q = np.zeros((env.observation_space.n, env.action_space.n))
@@ -18,6 +18,7 @@ def run(episodes, is_training=True, render=False):
             print("rewards.pkl not found")
             exit(1)
 
+
     learning_rate_a = 0.9
     discount_factor_g = 0.9
 
@@ -29,13 +30,13 @@ def run(episodes, is_training=True, render=False):
 
     for i in range(episodes):
         state = env.reset()[0]
-        terminated = False  # when falls into the hole
+        terminated = False
         truncated = False  # when >200 actions
 
-        while not terminated and not truncated:
+        while (not terminated and not truncated):
 
             if is_training and rng.random() < epsilon:
-                action = env.action_space.sample()  # actions: 0=left, 1=down, 2=right, 3=up
+                action = env.action_space.sample()
             else:
                 action = np.argmax(q[state, :])
 
@@ -74,4 +75,5 @@ def run(episodes, is_training=True, render=False):
 
 
 if __name__ == '__main__':
-    run(15000)
+    run(10, is_training=False, render=True)
+    # run(15000, is_training=True, render=False)
