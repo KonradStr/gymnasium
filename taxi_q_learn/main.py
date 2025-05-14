@@ -32,6 +32,7 @@ def run(episodes, is_training=True, render=False):
         state = env.reset()[0]
         terminated = False
         truncated = False  # when >200 actions
+        total_rewards = 0
 
         while (not terminated and not truncated):
 
@@ -41,6 +42,7 @@ def run(episodes, is_training=True, render=False):
                 action = np.argmax(q[state, :])
 
             new_state, reward, terminated, truncated, _ = env.step(action)
+            total_rewards += reward
 
             if is_training:
                 q[state, action] = q[state, action] + learning_rate_a * (
@@ -53,8 +55,7 @@ def run(episodes, is_training=True, render=False):
         if epsilon == 0:
             learning_rate_a = 0.0001
 
-        if reward == 1:
-            rewards_per_episode[i] = 1
+        rewards_per_episode[i] = total_rewards
 
     env.close()
 
