@@ -1,10 +1,8 @@
 import itertools
 import random
-import flappy_bird_gymnasium
 import gymnasium
 import numpy as np
 from torch import nn
-from tensorflow.python.ops.metrics_impl import mean_per_class_accuracy
 
 from dqn import DQN
 import torch
@@ -28,7 +26,7 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 class Agent:
     def __init__(self, hyperparameter_set):
-        with open('hyperparameters.yml', 'r') as file:
+        with open('../hyperparameters.yml', 'r') as file:
             all_hyperparameter_sets = yaml.safe_load(file)
             hyperparameters = all_hyperparameter_sets[hyperparameter_set]
 
@@ -89,7 +87,8 @@ class Agent:
 
             best_reward = -9999999
         else:
-            policy_dqn.load_state_dict(torch.load(self.MODEL_FILE)) # load learned policy
+            # policy_dqn.load_state_dict(torch.load(self.MODEL_FILE)) # load learned policy
+            policy_dqn.load_state_dict(torch.load(self.MODEL_FILE, map_location=device))
             policy_dqn.eval()
 
 
@@ -151,12 +150,6 @@ class Agent:
                         step_count = 0
 
 
-
-            # if len(memory) > self.mini_batch_size:
-            #     mini_batch = memory.sample(self.mini_batch_size)
-            #     self.optimize(mini_batch, policy_dqn, target_dqn)
-        # env.close()
-
     def save_graph(self, rewards_per_episode, epsilon_history):
         fig = plt.figure(1)
 
@@ -189,11 +182,7 @@ class Agent:
         with torch.no_grad():
             target_q = rewards + (1- terminations) * self.discount_factor_g * target_dqn(new_states).max(dim=1)[0]
 
-
-
         current_q = policy_dqn(states).gather(dim=1, index=actions.unsqueeze(dim=1)).squeeze()
-
-
 
         loss = self.loss_fn(current_q, target_q)
 
@@ -202,9 +191,6 @@ class Agent:
         self.optimizer.step()       # update network parameters i.e. weights and biases
 
 if __name__ == '__main__':
-    # agent = Agent("cartpole1")
-    agent = Agent("flappybird1")
-    # agent = Agent("lunarlander1")
-    # agent = Agent("carracing1")
+    agent = Agent("cartpole1")
     # agent.run(is_training=True, render=False)
     agent.run(is_training=False, render=True)

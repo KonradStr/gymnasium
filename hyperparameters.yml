@@ -29,6 +29,32 @@ flappybird1:
 
 lunarlander1:
   env_id: LunarLander-v3
+  learning_rate_a: 0.0005
+  discount_factor_g: 0.99
+  network_sync_rate: 500
+  replay_memory_size: 100000
+  mini_batch_size: 64
+  epsilon_init: 1.0
+  epsilon_decay: 0.995
+  epsilon_min: 0.01
+  stop_on_average_reward: 300
+  fc1_nodes: 256
+
+lunarlander2:
+  env_id: LunarLander-v3
+  learning_rate_a: 0.0001
+  discount_factor_g: 0.999
+  network_sync_rate: 1000
+  replay_memory_size: 500000
+  mini_batch_size: 512
+  epsilon_init: 1.0
+  epsilon_decay: 0.99995
+  epsilon_min: 0.01
+  stop_on_average_reward: 400
+  fc1_nodes: 512
+
+carracing1:
+  env_id: CarRacing-v3
   learning_rate_a: 0.0001
   discount_factor_g: 0.99
   network_sync_rate: 500
@@ -39,3 +65,4 @@ lunarlander1:
   epsilon_min: 0.05
   stop_on_reward: 100000
   fc1_nodes: 512
+
